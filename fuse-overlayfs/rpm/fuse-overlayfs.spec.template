@@ -1,0 +1,55 @@
+Summary: FUSE filesystem for containers.
+Name: fuse-overlayfs
+Version: #VERSION#
+Release: 1%{?dist}
+Source0: %{url}/archive/%{name}-%{version}.tar.gz
+License: GPLv3+
+URL: https://github.com/giuseppe/fuse-overlayfs
+
+# We always run autogen.sh
+BuildRequires: autoconf automake
+BuildRequires: git
+BuildRequires: gcc
+BuildRequires: fuse3-devel
+Requires: fuse3
+
+%description
+%{summary}.
+
+%package devel
+Summary: %{summary}
+BuildArch: noarch
+
+%description devel
+%{summary}
+
+This package contains library source intended for
+building other packages which use import path with
+%{import_path} prefix.
+
+%prep
+%autosetup -n %{name}-%{version}
+
+%build
+./autogen.sh
+./configure --prefix=%{_usr} --libdir=%{_libdir}
+%{__make}
+
+%install
+make DESTDIR=%{buildroot} install
+install -d %{buildroot}%{_usr}/lib/modules-load.d
+echo fuse > %{buildroot}%{_usr}/lib/modules-load.d/fuse-overlayfs.conf
+
+%post
+modprobe fuse > /dev/null 2>&1 || :
+
+%check
+
+#define license tag if not already defined
+%{!?_licensedir:%global license %doc}
+
+%files
+%license COPYING
+%{_bindir}/%{name}
+%{_mandir}/man1/*
+%{_usr}/lib/modules-load.d/fuse-overlayfs.conf
