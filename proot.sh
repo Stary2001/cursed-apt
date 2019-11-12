@@ -1,1 +1,2 @@
-PROOT_NO_SECCOMP=1 proot -S /tmp/meme-mount/ bash
+OVERLAY_MOUNT=meme-mount
+PROOT_NO_SECCOMP=1 proot -S /tmp/$OVERLAY_MOUNT/ bash

@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec apt -o APT::Sandbox::User=root "$@"
